@@ -32,7 +32,8 @@ struct ContentView: View {
                 TextField("나이", text: $age)
                     .padding()
                     .keyboardType(.decimalPad)
-                NavigationLink(destination: SymptomView()) {
+                let nage = Int(age) ?? 1
+                NavigationLink(destination: SymptomView(isPregnant: isPregnant, age: nage, gender: gender)) {
                     Text("증상 고르러 가기")
                 }
             }
@@ -43,7 +44,10 @@ struct ContentView: View {
 struct SymptomView: View {
     var symptoms: [String]
     @State var symptomChecked: [Bool]
-    init() {
+    let isPregnant: Bool
+    let age: Int
+    let gender: Gender
+    init(isPregnant: Bool, age: Int, gender: Gender) {
         symptomChecked = [Bool]()
         symptoms = [String]()
         if let path = Bundle.main.path(forResource: "symptoms", ofType: "txt") {
@@ -60,10 +64,14 @@ struct SymptomView: View {
             }
         }
     }
-    
+
     //화면을 그리드형식으로 꽉채워줌
     let columns = [GridItem(.adaptive(minimum: 100))]
 
+    func getDrugID(diseaseId: Int):Int {
+        // TODO
+        return 0
+    }
     var body: some View {
         ScrollView {
             Text("증상을 모두 체크해 주세요")
@@ -74,13 +82,41 @@ struct SymptomView: View {
                 }
             } .padding(.horizontal)
             NavigationLink(destination: ResultView()) {
-                Text("결과 받기")
+                Text("결과 받기").onTapGesture {
+                    let wrapper = NativeCodeWrapper()
+                    let converted : [Int] = symptomChecked.map { b in
+                        if b {
+                            return 1
+                        } else {
+                            return 0
+                        }
+                    }
+                    wrapper.initData(isPregnant, Int32(age), 50, symptomChecked, Int32(symptomChecked.capacity), 31)
+                    // copy weights to good location
+                    wrapper.initWeights()
+                    wrapper.calcData()
+                    let disId1 = wrapper.getDisID(0)
+                    let disId2 = wrapper.getDisID(1)
+                    let disId3 = wrapper.getDisID(2)
+                    
+                    let prob1 = wrapper.getProb(0)
+                    let prob2 = wrapper.getProb(1)
+                    let prob3 = wrapper.getProb(2)
+                    
+                    let mediId1 = getDrugID(diseaseId: Int(disId1))
+                    let mediId2 = getDrugID(diseaseId: Int(disId2))
+                    let mediId3 = getDrugID(diseaseId: Int(disId3))
+                    wrapper.finalizeNative()
+                    
+                }
             }
         }
     }
 }
 
 struct ResultView: View {
+    init() {
+    }
     var body: some View {
         Text("쾌유를 빕니다")
 
