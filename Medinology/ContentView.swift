@@ -41,7 +41,11 @@ struct ContentView: View {
 }
 
 struct SymptomView: View {
+    var symptoms: [String]
+    @State var symptomChecked: [Bool]
     init() {
+        symptomChecked = [Bool]()
+        symptoms = [String]()
         if let path = Bundle.main.path(forResource: "symptoms", ofType: "txt") {
             do {
                 print("REad success")
@@ -49,14 +53,14 @@ struct SymptomView: View {
                 let splitted = text.components(separatedBy: " ")
                 self.symptoms = splitted
                 print("Components: \(self.symptoms) from \(text) by \(splitted)")
+                _symptomChecked = State(initialValue: [Bool](repeating: false, count: splitted.capacity))
             } catch let error {
                 // Handle error here
                 print(error.localizedDescription)
             }
         }
     }
-    var symptoms: [String] = []
-
+    
     //화면을 그리드형식으로 꽉채워줌
     let columns = [GridItem(.adaptive(minimum: 100))]
 
@@ -64,8 +68,9 @@ struct SymptomView: View {
         ScrollView {
             Text("증상을 모두 체크해 주세요")
             LazyVGrid(columns: columns, spacing: 20) {
-                ForEach(symptoms, id: \.self) {
-                    i in Text(i)
+                ForEach(symptoms.indices, id: \.self) {
+                    index in
+                    Toggle(symptoms[index], isOn: $symptomChecked[index])
                 }
             } .padding(.horizontal)
             NavigationLink(destination: ResultView()) {
