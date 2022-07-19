@@ -68,7 +68,7 @@ struct SymptomView: View {
     //화면을 그리드형식으로 꽉채워줌
     let columns = [GridItem(.adaptive(minimum: 100))]
 
-    func getDrugID(diseaseId: Int):Int {
+    func getDrugID(diseaseId: Int) -> Int {
         // TODO
         return 0
     }
@@ -84,13 +84,6 @@ struct SymptomView: View {
             NavigationLink(destination: ResultView()) {
                 Text("결과 받기").onTapGesture {
                     let wrapper = NativeCodeWrapper()
-                    let converted : [Int] = symptomChecked.map { b in
-                        if b {
-                            return 1
-                        } else {
-                            return 0
-                        }
-                    }
                     wrapper.initData(isPregnant, Int32(age), 50, symptomChecked, Int32(symptomChecked.capacity), 31)
                     // copy weights to good location
                     wrapper.initWeights()

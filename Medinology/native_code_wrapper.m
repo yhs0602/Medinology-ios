@@ -10,8 +10,14 @@
 #import "native_code.hpp"
 @implementation NativeCodeWrapper
 
-- (void) initData:(bool)_preg :(int) _age :(int) _weight :(bool *) _symptoms :(int) symptomlen :(int) _diseases {
-    initData(_preg, _age, _weight, _symptoms, symptomlen, _diseases);
+- (void) initData:(bool)_preg :(int) _age :(int) _weight :(NSArray *) _symptoms :(int) symptomlen :(int) _diseases {
+    int count = (int) [_symptoms count];
+    bool * cArray = malloc(count * sizeof(bool));
+    for (int i = 0; i < count; ++i) {
+        cArray[i] = [[_symptoms objectAtIndex:i] boolValue];
+    }
+    initData(_preg, _age, _weight, cArray, symptomlen, _diseases);
+    free(cArray);
 }
 - (void) calcData {
     calcData();
