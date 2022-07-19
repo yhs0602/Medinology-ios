@@ -41,11 +41,36 @@ struct ContentView: View {
 }
 
 struct SymptomView: View {
+    init() {
+        if let path = Bundle.main.path(forResource: "symptoms", ofType: "txt") {
+            do {
+                print("REad success")
+                let text = try String(contentsOfFile: path, encoding: .utf8)
+                let splitted = text.components(separatedBy: " ")
+                self.symptoms = splitted
+                print("Components: \(self.symptoms) from \(text) by \(splitted)")
+            } catch let error {
+                // Handle error here
+                print(error.localizedDescription)
+            }
+        }
+    }
+    var symptoms: [String] = []
+
+    //화면을 그리드형식으로 꽉채워줌
+    let columns = [GridItem(.adaptive(minimum: 100))]
+
     var body: some View {
-        Text("증상을 모두 체크해 주세요")
-        
-        NavigationLink(destination: ResultView()) {
-            Text("결과 받기")
+        ScrollView {
+            Text("증상을 모두 체크해 주세요")
+            LazyVGrid(columns: columns, spacing: 20) {
+                ForEach(symptoms, id: \.self) {
+                    i in Text(i)
+                }
+            } .padding(.horizontal)
+            NavigationLink(destination: ResultView()) {
+                Text("결과 받기")
+            }
         }
     }
 }
@@ -53,7 +78,7 @@ struct SymptomView: View {
 struct ResultView: View {
     var body: some View {
         Text("쾌유를 빕니다")
-        
+
     }
 }
 
