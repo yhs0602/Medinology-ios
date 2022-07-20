@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CSVImporter
 
 enum Gender {
     case Male
@@ -47,20 +48,68 @@ struct SymptomView: View {
     let isPregnant: Bool
     let age: Int
     let gender: Gender
+    var disease2drugs = [Int: [Int]]()
+    var diseaseNames =  [String]()
+    var drugNames = [String]()
     init(isPregnant: Bool, age: Int, gender: Gender) {
         symptomChecked = [Bool]()
         symptoms = [String]()
         self.isPregnant = isPregnant
         self.age = age
         self.gender = gender
+
         if let path = Bundle.main.path(forResource: "symptoms", ofType: "txt") {
             do {
-                print("REad success")
+                print("Read success")
                 let text = try String(contentsOfFile: path, encoding: .utf8)
                 let splitted = text.components(separatedBy: " ")
-                self.symptoms = splitted
+                self.symptoms = splitted.map { name in
+                    name.trimmingLeadingAndTrailingSpaces()
+                }
                 print("Components: \(self.symptoms) from \(text) by \(splitted)")
                 _symptomChecked = State(initialValue: [Bool](repeating: false, count: splitted.capacity))
+            } catch let error {
+                // Handle error here
+                print(error.localizedDescription)
+            }
+        }
+        if let path2 = Bundle.main.path(forResource: "disdru", ofType: "csv") {
+            do {
+                print("Read disease-drug table")
+                let importer = CSVImporter<[String]>(path: path2)
+                let importedRecords = importer.importRecords { $0 }
+
+                for (index, disease) in importedRecords.enumerated() {
+                    disease2drugs[index] = []
+                    for (drug_index, drug) in disease.enumerated() {
+                        if drug == "1" {
+                            disease2drugs[index]?.append(drug_index)
+                        }
+                    }
+                }
+            }
+        }
+        if let diseaseNamesPath = Bundle.main.path(forResource: "diseases", ofType: "txt") {
+            do {
+                print("Read disease name table")
+                let text = try String(contentsOfFile: diseaseNamesPath, encoding: .utf8)
+                let splitted = text.components(separatedBy: " ")
+                self.diseaseNames = splitted.map { name in
+                    name.trimmingLeadingAndTrailingSpaces()
+                }
+            } catch let error {
+                // Handle error here
+                print(error.localizedDescription)
+            }
+        }
+        if let drugNamesPath = Bundle.main.path(forResource: "drugs", ofType: "txt") {
+            do {
+                print("Read drug name table")
+                let text = try String(contentsOfFile: drugNamesPath, encoding: .utf8)
+                let splitted = text.components(separatedBy: " ")
+                self.drugNames = splitted.map { name in
+                    name.trimmingLeadingAndTrailingSpaces()
+                }
             } catch let error {
                 // Handle error here
                 print(error.localizedDescription)
@@ -71,10 +120,10 @@ struct SymptomView: View {
     //화면을 그리드형식으로 꽉채워줌
     let columns = [GridItem(.adaptive(minimum: 100))]
 
-    func getDrugID(diseaseId: Int) -> Int {
-        // TODO
-        return 0
+    func getDrugID(diseaseId: Int) -> [Int] {
+        return disease2drugs[diseaseId]!
     }
+    
     var body: some View {
         ScrollView {
             Text("증상을 모두 체크해 주세요")
@@ -91,19 +140,33 @@ struct SymptomView: View {
                     // copy weights to good location
                     wrapper.initWeights()
                     wrapper.calcData()
-                    let disId1 = wrapper.getDisID(0)
-                    let disId2 = wrapper.getDisID(1)
-                    let disId3 = wrapper.getDisID(2)
-                    
+                    let disId1 = Int(wrapper.getDisID(0))
+                    let disId2 = Int(wrapper.getDisID(1))
+                    let disId3 = Int(wrapper.getDisID(2))
+
                     let prob1 = wrapper.getProb(0)
                     let prob2 = wrapper.getProb(1)
                     let prob3 = wrapper.getProb(2)
                     
-                    let mediId1 = getDrugID(diseaseId: Int(disId1))
-                    let mediId2 = getDrugID(diseaseId: Int(disId2))
-                    let mediId3 = getDrugID(diseaseId: Int(disId3))
                     wrapper.finalizeNative()
-                    print(disId1, disId2, disId3, prob1, prob2, prob3, mediId1, mediId2, mediId3)
+                    let mediIds1 = getDrugID(diseaseId: disId1)
+                    let mediIds2 = getDrugID(diseaseId: disId2)
+                    let mediIds3 = getDrugID(diseaseId: disId3)
+                    
+                    let drugNames1 = mediIds1.map { id in
+                        self.drugNames[try: id]!
+                    }
+                    let drugNames2 = mediIds2.map { id in
+                        self.drugNames[try: id]!
+                    }
+                    let drugNames3 = mediIds3.map { id in
+                        self.drugNames[try: id]!
+                    }
+                    let diseaseName1 = diseaseNames[disId1]
+                    let diseaseName2 = diseaseNames[disId2]
+                    let diseaseName3 = diseaseNames[disId3]
+                    print(disId1, disId2, disId3, prob1, prob2, prob3, mediIds1, mediIds2, mediIds3)
+                    print(diseaseName1, diseaseName2, diseaseName3, drugNames1, drugNames2, drugNames3)
                 }
             }
         }

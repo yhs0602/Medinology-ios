@@ -16,6 +16,11 @@
 		46082C2E288712E500B6AA5C /* native_code_wrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 46082C2D288712E500B6AA5C /* native_code_wrapper.m */; };
 		46082C3028878FBE00B6AA5C /* weights.txt in Resources */ = {isa = PBXBuildFile; fileRef = 46082C2F28878FBE00B6AA5C /* weights.txt */; };
 		4641EEB5288797CB00B219F5 /* log.m in Sources */ = {isa = PBXBuildFile; fileRef = 4641EEB4288797CB00B219F5 /* log.m */; };
+		4641EEB928879C5900B219F5 /* CSVImporter in Frameworks */ = {isa = PBXBuildFile; productRef = 4641EEB828879C5900B219F5 /* CSVImporter */; };
+		4641EEBD28879D8F00B219F5 /* diseases.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4641EEBC28879D8F00B219F5 /* diseases.txt */; };
+		4641EEBF28879DD400B219F5 /* drugs.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4641EEBE28879DD400B219F5 /* drugs.txt */; };
+		4641EEC12887A0F600B219F5 /* disdru.csv in Resources */ = {isa = PBXBuildFile; fileRef = 4641EEC02887A0F600B219F5 /* disdru.csv */; };
+		4641EEC32887A2DA00B219F5 /* String+trim.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4641EEC22887A2DA00B219F5 /* String+trim.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -33,6 +38,10 @@
 		46082C2F28878FBE00B6AA5C /* weights.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = weights.txt; sourceTree = "<group>"; };
 		4641EEB4288797CB00B219F5 /* log.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = log.m; sourceTree = "<group>"; };
 		4641EEB6288797E200B219F5 /* log.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = log.h; sourceTree = "<group>"; };
+		4641EEBC28879D8F00B219F5 /* diseases.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = diseases.txt; sourceTree = "<group>"; };
+		4641EEBE28879DD400B219F5 /* drugs.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = drugs.txt; sourceTree = "<group>"; };
+		4641EEC02887A0F600B219F5 /* disdru.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = disdru.csv; sourceTree = "<group>"; };
+		4641EEC22887A2DA00B219F5 /* String+trim.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+trim.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -40,6 +49,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4641EEB928879C5900B219F5 /* CSVImporter in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +75,7 @@
 		460820DA2886964A00B6AA5C /* Medinology */ = {
 			isa = PBXGroup;
 			children = (
+				4641EEC02887A0F600B219F5 /* disdru.csv */,
 				46082C2F28878FBE00B6AA5C /* weights.txt */,
 				460820DB2886964A00B6AA5C /* MedinologyApp.swift */,
 				460820DD2886964A00B6AA5C /* ContentView.swift */,
@@ -78,6 +89,9 @@
 				46082C2D288712E500B6AA5C /* native_code_wrapper.m */,
 				4641EEB4288797CB00B219F5 /* log.m */,
 				4641EEB6288797E200B219F5 /* log.h */,
+				4641EEBC28879D8F00B219F5 /* diseases.txt */,
+				4641EEBE28879DD400B219F5 /* drugs.txt */,
+				4641EEC22887A2DA00B219F5 /* String+trim.swift */,
 			);
 			path = Medinology;
 			sourceTree = "<group>";
@@ -106,6 +120,9 @@
 			dependencies = (
 			);
 			name = Medinology;
+			packageProductDependencies = (
+				4641EEB828879C5900B219F5 /* CSVImporter */,
+			);
 			productName = Medinology;
 			productReference = 460820D82886964A00B6AA5C /* Medinology.app */;
 			productType = "com.apple.product-type.application";
@@ -135,6 +152,9 @@
 				Base,
 			);
 			mainGroup = 460820CF2886964A00B6AA5C;
+			packageReferences = (
+				4641EEB728879C5900B219F5 /* XCRemoteSwiftPackageReference "CSVImporter" */,
+			);
 			productRefGroup = 460820D92886964A00B6AA5C /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -150,8 +170,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				460820E32886964B00B6AA5C /* Preview Assets.xcassets in Resources */,
+				4641EEBD28879D8F00B219F5 /* diseases.txt in Resources */,
+				4641EEC12887A0F600B219F5 /* disdru.csv in Resources */,
 				460820E02886964B00B6AA5C /* Assets.xcassets in Resources */,
 				46082C3028878FBE00B6AA5C /* weights.txt in Resources */,
+				4641EEBF28879DD400B219F5 /* drugs.txt in Resources */,
 				460820EA288708FB00B6AA5C /* symptoms.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -165,6 +188,7 @@
 			files = (
 				460820EE288710C900B6AA5C /* native_code.cpp in Sources */,
 				46082C2E288712E500B6AA5C /* native_code_wrapper.m in Sources */,
+				4641EEC32887A2DA00B219F5 /* String+trim.swift in Sources */,
 				4641EEB5288797CB00B219F5 /* log.m in Sources */,
 				460820DE2886964A00B6AA5C /* ContentView.swift in Sources */,
 				460820DC2886964A00B6AA5C /* MedinologyApp.swift in Sources */,
@@ -373,6 +397,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4641EEB728879C5900B219F5 /* XCRemoteSwiftPackageReference "CSVImporter" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/FlineDev/CSVImporter";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4641EEB828879C5900B219F5 /* CSVImporter */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4641EEB728879C5900B219F5 /* XCRemoteSwiftPackageReference "CSVImporter" */;
+			productName = CSVImporter;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 460820D02886964A00B6AA5C /* Project object */;
 }
