@@ -7,6 +7,7 @@
 
 import SwiftUI
 import CSVImporter
+import AVFoundation
 
 enum Gender {
     case Male
@@ -48,9 +49,9 @@ struct SymptomView: View {
     let isPregnant: Bool
     let age: Int
     let gender: Gender
-    var disease2drugs = [Int: [Int]]()
-    var diseaseNames =  [String]()
-    var drugNames = [String]()
+
+    @State var isPresented = false
+
     init(isPregnant: Bool, age: Int, gender: Gender) {
         symptomChecked = [Bool]()
         symptoms = [String]()
@@ -73,6 +74,101 @@ struct SymptomView: View {
                 print(error.localizedDescription)
             }
         }
+    }
+
+    //화면을 그리드형식으로 꽉채워줌
+    let columns = [GridItem(.adaptive(minimum: 100))]
+
+    var body: some View {
+        ScrollView {
+            Text("증상을 모두 체크해 주세요")
+            LazyVGrid(columns: columns, spacing: 20) {
+                ForEach(symptoms.indices, id: \.self) {
+                    index in
+                    Toggle(symptoms[index], isOn: $symptomChecked[index])
+                }
+            } .padding(.horizontal)
+            NavigationLink(destination: ResultView(isPregnant: isPregnant, age: age, symptomChecked: symptomChecked), isActive: $isPresented) {
+                Text("결과 받기")
+            }
+                .simultaneousGesture(TapGesture().onEnded({
+
+            }))
+                .navigationBarTitle(Text("결과"), displayMode: .inline)
+        }
+    }
+}
+
+struct ResultView: View {
+    let isPregnant: Bool
+    let age: Int
+    let symptomChecked: [Bool]
+
+    var disease2drugs = [Int: [Int]]()
+    var diseaseNames = [String]()
+    var drugNames = [String]()
+
+    func getDrugID(diseaseId: Int) -> [Int] {
+        return disease2drugs[diseaseId]!
+    }
+
+    var prob1 = 0
+    var prob2 = 0
+    var prob3 = 0
+
+    var drugNames1 = [String]()
+    var drugNames2 = [String]()
+    var drugNames3 = [String]()
+
+    var diseaseName1 = ""
+    var diseaseName2 = ""
+    var diseaseName3 = ""
+
+    var drugDetails = [DrugDetail]()
+
+    var comment1: String? = nil
+    var comment2: String? = nil
+    var comment3: String? = nil
+
+    let synthsizer = AVSpeechSynthesizer()
+    func buildComments(drugIds: [Int]) -> String? {
+        let comments: [String] = drugIds.map { id in
+            return buildComment(drugId: id)
+        }.compactMap { $0 }
+        if comments.capacity == 0 {
+            return nil
+        }
+        return comments.joined(separator: ", ")
+    }
+
+    func buildComment(drugId: Int) -> String? {
+        var result = "\(drugNames[drugId])(은/는)"
+        let drugDetail = drugDetails[drugId]
+        guard drugDetail.should_consult else {
+            return nil
+        }
+
+        if drugDetail.need_prescription {
+            result += " 처방이 필요합니다."
+        }
+        if drugDetail.danger_pregnant {
+            result += " 임산부에게 위험합니다."
+        }
+        if drugDetail.danger_children {
+            result += " 어린이에게 위험합니다."
+        }
+        if drugDetail.danger_elderly {
+            result += " 어르신께 위험합니다."
+        }
+        result += " 의사나 약사와 상담하는 것이 안전합니다."
+        return result
+    }
+
+    init(isPregnant: Bool, age: Int, symptomChecked: [Bool]) {
+        self.isPregnant = isPregnant
+        self.age = age
+        self.symptomChecked = symptomChecked
+
         if let path2 = Bundle.main.path(forResource: "disdru", ofType: "csv") {
             do {
                 print("Read disease-drug table")
@@ -86,6 +182,19 @@ struct SymptomView: View {
                             disease2drugs[index]?.append(drug_index)
                         }
                     }
+                }
+            }
+        }
+        if let drugdetailpath = Bundle.main.path(forResource: "drugdetail", ofType: "csv") {
+            do {
+                print("Read drug detail table")
+                let importer = CSVImporter<[String]>(path: drugdetailpath)
+                let importedRecords = importer.importRecords { $0 }
+
+                for drug in importedRecords {
+                    drugDetails.append(DrugDetail(
+                        need_prescription: drug[0] == "1", danger_pregnant: drug[1] == "1", danger_children: drug[2] == "2", danger_elderly: drug[3] == "1"
+                    ))
                 }
             }
         }
@@ -115,161 +224,92 @@ struct SymptomView: View {
                 print(error.localizedDescription)
             }
         }
-    }
 
-    //화면을 그리드형식으로 꽉채워줌
-    let columns = [GridItem(.adaptive(minimum: 100))]
+        let wrapper = NativeCodeWrapper()
+        wrapper.initData(isPregnant, Int32(age), 50, symptomChecked, 31)
+        // copy weights to good location
+        wrapper.initWeights()
+        wrapper.calcData()
+        let disId1 = Int(wrapper.getDisID(0))
+        let disId2 = Int(wrapper.getDisID(1))
+        let disId3 = Int(wrapper.getDisID(2))
 
-    func getDrugID(diseaseId: Int) -> [Int] {
-        return disease2drugs[diseaseId]!
-    }
-    
-    var body: some View {
-        ScrollView {
-            Text("증상을 모두 체크해 주세요")
-            LazyVGrid(columns: columns, spacing: 20) {
-                ForEach(symptoms.indices, id: \.self) {
-                    index in
-                    Toggle(symptoms[index], isOn: $symptomChecked[index])
-                }
-            } .padding(.horizontal)
-            NavigationLink(destination: ResultView()) {
-                Text("결과 받기")
-            }
-            .simultaneousGesture(TapGesture().onEnded({
-                let wrapper = NativeCodeWrapper()
-                wrapper.initData(isPregnant, Int32(age), 50, symptomChecked, 31)
-                // copy weights to good location
-                wrapper.initWeights()
-                wrapper.calcData()
-                let disId1 = Int(wrapper.getDisID(0))
-                let disId2 = Int(wrapper.getDisID(1))
-                let disId3 = Int(wrapper.getDisID(2))
+        self.prob1 = Int(wrapper.getProb(0))
+        self.prob2 = Int(wrapper.getProb(1))
+        self.prob3 = Int(wrapper.getProb(2))
 
-                let prob1 = wrapper.getProb(0)
-                let prob2 = wrapper.getProb(1)
-                let prob3 = wrapper.getProb(2)
-                
-                wrapper.finalizeNative()
-                let mediIds1 = getDrugID(diseaseId: disId1)
-                let mediIds2 = getDrugID(diseaseId: disId2)
-                let mediIds3 = getDrugID(diseaseId: disId3)
-                
-                let drugNames1 = mediIds1.map { id in
-                    self.drugNames[try: id]!
-                }
-                let drugNames2 = mediIds2.map { id in
-                    self.drugNames[try: id]!
-                }
-                let drugNames3 = mediIds3.map { id in
-                    self.drugNames[try: id]!
-                }
-                let diseaseName1 = diseaseNames[disId1]
-                let diseaseName2 = diseaseNames[disId2]
-                let diseaseName3 = diseaseNames[disId3]
-                print(disId1, disId2, disId3, prob1, prob2, prob3, mediIds1, mediIds2, mediIds3)
-                print(diseaseName1, diseaseName2, diseaseName3, drugNames1, drugNames2, drugNames3)
-            }))
-            .navigationBarTitle(Text("결과"), displayMode: .inline)
+        wrapper.finalizeNative()
+        let mediIds1 = getDrugID(diseaseId: disId1)
+        let mediIds2 = getDrugID(diseaseId: disId2)
+        let mediIds3 = getDrugID(diseaseId: disId3)
+
+        self.drugNames1 = mediIds1.map { id in
+            self.drugNames[try: id]!
         }
-    }
-}
-
-struct ResultView: View {
-    init() {
+        self.drugNames2 = mediIds2.map { id in
+            self.drugNames[try: id]!
+        }
+        self.drugNames3 = mediIds3.map { id in
+            self.drugNames[try: id]!
+        }
+        self.diseaseName1 = diseaseNames[disId1]
+        self.diseaseName2 = diseaseNames[disId2]
+        self.diseaseName3 = diseaseNames[disId3]
+        print(disId1, disId2, disId3, prob1, prob2, prob3, mediIds1, mediIds2, mediIds3)
+        print(diseaseName1, diseaseName2, diseaseName3, drugNames1, drugNames2, drugNames3)
+        self.comment1 = buildComments(drugIds: mediIds1)
+        self.comment2 = buildComments(drugIds: mediIds2)
+        self.comment3 = buildComments(drugIds: mediIds3)
     }
     var body: some View {
-        Text("쾌유를 빕니다")
+        VStack {
+            Text("이용자님의 진단 질병과 처방 약은 다음과 같습니다.")
+            Text("\(prob1)% 확률로 \(diseaseName1)이며 치료제는 \(drugNames1.joined(separator: ", ")) 입니다.")
+            if let comment11 = comment1 {
+                Text(comment11)
+                    .background(.red)
+            }
+            Text("\(prob2)% 확률로 \(diseaseName2)이며 치료제는 \(drugNames2.joined(separator: ", ")) 입니다.")
+            if let comment22 = comment2 {
+                Text(comment22)
+                    .background(.red)
+            }
+            Text("\(prob3)% 확률로 \(diseaseName3)이며 치료제는 \(drugNames3.joined(separator: ", ")) 입니다.")
+            if let comment33 = comment3 {
+                Text(comment33)
+                    .background(.red)
+            }
+            Text("쾌유를 빕니다")
+                .background(.green)
+            Text("면책 : 이 결과를 맹신하는 것은 위험할 수 있으므로 반드시 병원에서 의사와 상담하시기 바랍니다.")
+                .background(.red)
+        }
+            .background(.cyan)
+            .onAppear {
+            var text = "이용자님의 진단 질병과 처방 약은 다음과 같습니다." + "\(prob1)% 확률로 \(diseaseName1)이며 치료제는 \(drugNames1.joined(separator: ", ")) 입니다."
+            if let comment11 = comment1 {
+                text += comment11
+            }
+            text += "\(prob2)% 확률로 \(diseaseName2)이며 치료제는 \(drugNames2.joined(separator: ", ")) 입니다."
+            if let comment22 = comment2 {
+                text += comment22
+            }
+            text += "\(prob3)% 확률로 \(diseaseName3)이며 치료제는 \(drugNames3.joined(separator: ", ")) 입니다."
+            if let comment33 = comment3 {
+                text += comment33
+            }
+            text += "쾌유를 빕니다"
+            text += "면책 : 이 결과를 맹신하는 것은 위험할 수 있으므로 반드시 병원에서 의사와 상담하시기 바랍니다."
+            let soundText = AVSpeechUtterance(string: text)
+            soundText.voice = AVSpeechSynthesisVoice(language: "ko-KR")
 
+            synthsizer.speak(soundText)
+        }
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
-    }
-}
-
-struct ColorInvert: ViewModifier {
-
-    @Environment(\.colorScheme) var colorScheme
-
-    func body(content: Content) -> some View {
-        Group {
-            if colorScheme == .dark {
-                content.colorInvert()
-            } else {
-                content
-            }
-        }
-    }
-}
-
-struct RadioButton: View {
-
-    @Environment(\.colorScheme) var colorScheme
-
-    let id: String
-    let callback: (String) -> ()
-    let selectedID: String
-    let size: CGFloat
-    let color: Color
-    let textSize: CGFloat
-
-    init(
-        _ id: String,
-        callback: @escaping (String) -> (),
-        selectedID: String,
-        size: CGFloat = 20,
-        color: Color = Color.primary,
-        textSize: CGFloat = 14
-    ) {
-        self.id = id
-        self.size = size
-        self.color = color
-        self.textSize = textSize
-        self.selectedID = selectedID
-        self.callback = callback
-    }
-
-    var body: some View {
-        Button(action: {
-            self.callback(self.id)
-        }) {
-            HStack(alignment: .center, spacing: 10) {
-                Image(systemName: self.selectedID == self.id ? "largecircle.fill.circle" : "circle")
-                    .renderingMode(.original)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: self.size, height: self.size)
-                    .modifier(ColorInvert())
-                Text(id)
-                    .font(Font.system(size: textSize))
-                Spacer()
-            }.foregroundColor(self.color)
-        }
-            .foregroundColor(self.color)
-    }
-}
-
-struct RadioButtonGroup: View {
-
-    let items: [String]
-
-    @State var selectedId: String = ""
-
-    let callback: (String) -> ()
-
-    var body: some View {
-        VStack {
-            ForEach(0..<items.count) { index in
-                RadioButton(self.items[index], callback: self.radioGroupCallback, selectedID: self.selectedId)
-            }
-        }
-    }
-
-    func radioGroupCallback(id: String) {
-        selectedId = id
-        callback(id)
     }
 }

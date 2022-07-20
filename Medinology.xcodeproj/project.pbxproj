@@ -21,6 +21,9 @@
 		4641EEBF28879DD400B219F5 /* drugs.txt in Resources */ = {isa = PBXBuildFile; fileRef = 4641EEBE28879DD400B219F5 /* drugs.txt */; };
 		4641EEC12887A0F600B219F5 /* disdru.csv in Resources */ = {isa = PBXBuildFile; fileRef = 4641EEC02887A0F600B219F5 /* disdru.csv */; };
 		4641EEC32887A2DA00B219F5 /* String+trim.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4641EEC22887A2DA00B219F5 /* String+trim.swift */; };
+		4641EEC52887A72D00B219F5 /* drugdetail.csv in Resources */ = {isa = PBXBuildFile; fileRef = 4641EEC42887A72D00B219F5 /* drugdetail.csv */; };
+		4641EEC72887A78C00B219F5 /* RadioButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4641EEC62887A78C00B219F5 /* RadioButton.swift */; };
+		4641EEC92887A7A000B219F5 /* DrugDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4641EEC82887A7A000B219F5 /* DrugDetail.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +45,9 @@
 		4641EEBE28879DD400B219F5 /* drugs.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = drugs.txt; sourceTree = "<group>"; };
 		4641EEC02887A0F600B219F5 /* disdru.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = disdru.csv; sourceTree = "<group>"; };
 		4641EEC22887A2DA00B219F5 /* String+trim.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+trim.swift"; sourceTree = "<group>"; };
+		4641EEC42887A72D00B219F5 /* drugdetail.csv */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = drugdetail.csv; sourceTree = "<group>"; };
+		4641EEC62887A78C00B219F5 /* RadioButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RadioButton.swift; sourceTree = "<group>"; };
+		4641EEC82887A7A000B219F5 /* DrugDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrugDetail.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +81,7 @@
 		460820DA2886964A00B6AA5C /* Medinology */ = {
 			isa = PBXGroup;
 			children = (
+				4641EEC42887A72D00B219F5 /* drugdetail.csv */,
 				4641EEC02887A0F600B219F5 /* disdru.csv */,
 				46082C2F28878FBE00B6AA5C /* weights.txt */,
 				460820DB2886964A00B6AA5C /* MedinologyApp.swift */,
@@ -92,6 +99,8 @@
 				4641EEBC28879D8F00B219F5 /* diseases.txt */,
 				4641EEBE28879DD400B219F5 /* drugs.txt */,
 				4641EEC22887A2DA00B219F5 /* String+trim.swift */,
+				4641EEC62887A78C00B219F5 /* RadioButton.swift */,
+				4641EEC82887A7A000B219F5 /* DrugDetail.swift */,
 			);
 			path = Medinology;
 			sourceTree = "<group>";
@@ -174,6 +183,7 @@
 				4641EEC12887A0F600B219F5 /* disdru.csv in Resources */,
 				460820E02886964B00B6AA5C /* Assets.xcassets in Resources */,
 				46082C3028878FBE00B6AA5C /* weights.txt in Resources */,
+				4641EEC52887A72D00B219F5 /* drugdetail.csv in Resources */,
 				4641EEBF28879DD400B219F5 /* drugs.txt in Resources */,
 				460820EA288708FB00B6AA5C /* symptoms.txt in Resources */,
 			);
@@ -186,7 +196,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4641EEC92887A7A000B219F5 /* DrugDetail.swift in Sources */,
 				460820EE288710C900B6AA5C /* native_code.cpp in Sources */,
+				4641EEC72887A78C00B219F5 /* RadioButton.swift in Sources */,
 				46082C2E288712E500B6AA5C /* native_code_wrapper.m in Sources */,
 				4641EEC32887A2DA00B219F5 /* String+trim.swift in Sources */,
 				4641EEB5288797CB00B219F5 /* log.m in Sources */,
