@@ -10,7 +10,7 @@
 
 #import <Foundation/Foundation.h>
 @interface NativeCodeWrapper : NSObject
-- (void) initData:(bool)_preg :(int) _age :(int) _weight :(NSArray*) _symptoms :(int) symptomlen :(int) _diseases;
+- (void) initData:(bool)_preg :(int) _age :(int) _weight :(NSArray*) _symptoms :(int) _diseases;
 - (void) calcData;
 - (int) getDisID:(int) n;
 - (int) getProb: (int) n;

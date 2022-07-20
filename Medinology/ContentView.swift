@@ -50,6 +50,9 @@ struct SymptomView: View {
     init(isPregnant: Bool, age: Int, gender: Gender) {
         symptomChecked = [Bool]()
         symptoms = [String]()
+        self.isPregnant = isPregnant
+        self.age = age
+        self.gender = gender
         if let path = Bundle.main.path(forResource: "symptoms", ofType: "txt") {
             do {
                 print("REad success")
@@ -84,7 +87,7 @@ struct SymptomView: View {
             NavigationLink(destination: ResultView()) {
                 Text("결과 받기").onTapGesture {
                     let wrapper = NativeCodeWrapper()
-                    wrapper.initData(isPregnant, Int32(age), 50, symptomChecked, Int32(symptomChecked.capacity), 31)
+                    wrapper.initData(isPregnant, Int32(age), 50, symptomChecked, 31)
                     // copy weights to good location
                     wrapper.initWeights()
                     wrapper.calcData()
@@ -100,7 +103,7 @@ struct SymptomView: View {
                     let mediId2 = getDrugID(diseaseId: Int(disId2))
                     let mediId3 = getDrugID(diseaseId: Int(disId3))
                     wrapper.finalizeNative()
-                    
+                    print(disId1, disId2, disId3, prob1, prob2, prob3, mediId1, mediId2, mediId3)
                 }
             }
         }

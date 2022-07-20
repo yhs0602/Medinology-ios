@@ -504,11 +504,13 @@ float *symptoms;
 int disease1,disease2,disease3;
 int prob1,prob2,prob3;
 int diseasenum;
-void initData(bool _preg,int _age,int _weight,bool * _symptoms, int symptomlen, int _diseases)
+extern "C" {
+void initData(bool _preg,int _age,int _weight,bool * _symptoms, int _symptomlen, int _diseases)
 {
     preg=_preg;
     age=_age;
     diseasenum=_diseases;
+    symptomlen = _symptomlen;
     symptoms= new float[symptomlen];
     for(int i=0;i<symptomlen;++i)
     {
@@ -571,9 +573,9 @@ int getProb(int n)
     return 0;
 }
 
-void initWeights()
+void initWeights(const char * path)
 {
-    LoadWeights("/sdcard/weight.txt");
+    LoadWeights(path);
     //    logger<<"weight successfully loaded"<<endl;
 }
 
@@ -584,3 +586,4 @@ void finalizeNative()
     //delete net;
 }
 
+}
