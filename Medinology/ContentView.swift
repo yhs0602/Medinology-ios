@@ -134,41 +134,43 @@ struct SymptomView: View {
                 }
             } .padding(.horizontal)
             NavigationLink(destination: ResultView()) {
-                Text("결과 받기").onTapGesture {
-                    let wrapper = NativeCodeWrapper()
-                    wrapper.initData(isPregnant, Int32(age), 50, symptomChecked, 31)
-                    // copy weights to good location
-                    wrapper.initWeights()
-                    wrapper.calcData()
-                    let disId1 = Int(wrapper.getDisID(0))
-                    let disId2 = Int(wrapper.getDisID(1))
-                    let disId3 = Int(wrapper.getDisID(2))
-
-                    let prob1 = wrapper.getProb(0)
-                    let prob2 = wrapper.getProb(1)
-                    let prob3 = wrapper.getProb(2)
-                    
-                    wrapper.finalizeNative()
-                    let mediIds1 = getDrugID(diseaseId: disId1)
-                    let mediIds2 = getDrugID(diseaseId: disId2)
-                    let mediIds3 = getDrugID(diseaseId: disId3)
-                    
-                    let drugNames1 = mediIds1.map { id in
-                        self.drugNames[try: id]!
-                    }
-                    let drugNames2 = mediIds2.map { id in
-                        self.drugNames[try: id]!
-                    }
-                    let drugNames3 = mediIds3.map { id in
-                        self.drugNames[try: id]!
-                    }
-                    let diseaseName1 = diseaseNames[disId1]
-                    let diseaseName2 = diseaseNames[disId2]
-                    let diseaseName3 = diseaseNames[disId3]
-                    print(disId1, disId2, disId3, prob1, prob2, prob3, mediIds1, mediIds2, mediIds3)
-                    print(diseaseName1, diseaseName2, diseaseName3, drugNames1, drugNames2, drugNames3)
-                }
+                Text("결과 받기")
             }
+            .simultaneousGesture(TapGesture().onEnded({
+                let wrapper = NativeCodeWrapper()
+                wrapper.initData(isPregnant, Int32(age), 50, symptomChecked, 31)
+                // copy weights to good location
+                wrapper.initWeights()
+                wrapper.calcData()
+                let disId1 = Int(wrapper.getDisID(0))
+                let disId2 = Int(wrapper.getDisID(1))
+                let disId3 = Int(wrapper.getDisID(2))
+
+                let prob1 = wrapper.getProb(0)
+                let prob2 = wrapper.getProb(1)
+                let prob3 = wrapper.getProb(2)
+                
+                wrapper.finalizeNative()
+                let mediIds1 = getDrugID(diseaseId: disId1)
+                let mediIds2 = getDrugID(diseaseId: disId2)
+                let mediIds3 = getDrugID(diseaseId: disId3)
+                
+                let drugNames1 = mediIds1.map { id in
+                    self.drugNames[try: id]!
+                }
+                let drugNames2 = mediIds2.map { id in
+                    self.drugNames[try: id]!
+                }
+                let drugNames3 = mediIds3.map { id in
+                    self.drugNames[try: id]!
+                }
+                let diseaseName1 = diseaseNames[disId1]
+                let diseaseName2 = diseaseNames[disId2]
+                let diseaseName3 = diseaseNames[disId3]
+                print(disId1, disId2, disId3, prob1, prob2, prob3, mediIds1, mediIds2, mediIds3)
+                print(diseaseName1, diseaseName2, diseaseName3, drugNames1, drugNames2, drugNames3)
+            }))
+            .navigationBarTitle(Text("결과"), displayMode: .inline)
         }
     }
 }
