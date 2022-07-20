@@ -15,6 +15,7 @@
 		460820EE288710C900B6AA5C /* native_code.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 460820EC288710C900B6AA5C /* native_code.cpp */; };
 		46082C2E288712E500B6AA5C /* native_code_wrapper.m in Sources */ = {isa = PBXBuildFile; fileRef = 46082C2D288712E500B6AA5C /* native_code_wrapper.m */; };
 		46082C3028878FBE00B6AA5C /* weights.txt in Resources */ = {isa = PBXBuildFile; fileRef = 46082C2F28878FBE00B6AA5C /* weights.txt */; };
+		4641EEB5288797CB00B219F5 /* log.m in Sources */ = {isa = PBXBuildFile; fileRef = 4641EEB4288797CB00B219F5 /* log.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,8 @@
 		46082C2C2887124800B6AA5C /* native_code_wrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = native_code_wrapper.h; sourceTree = "<group>"; };
 		46082C2D288712E500B6AA5C /* native_code_wrapper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = native_code_wrapper.m; sourceTree = "<group>"; };
 		46082C2F28878FBE00B6AA5C /* weights.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = weights.txt; sourceTree = "<group>"; };
+		4641EEB4288797CB00B219F5 /* log.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = log.m; sourceTree = "<group>"; };
+		4641EEB6288797E200B219F5 /* log.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = log.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +76,8 @@
 				460820EB288710C900B6AA5C /* Medinology-Bridging-Header.h */,
 				46082C2C2887124800B6AA5C /* native_code_wrapper.h */,
 				46082C2D288712E500B6AA5C /* native_code_wrapper.m */,
+				4641EEB4288797CB00B219F5 /* log.m */,
+				4641EEB6288797E200B219F5 /* log.h */,
 			);
 			path = Medinology;
 			sourceTree = "<group>";
@@ -160,6 +165,7 @@
 			files = (
 				460820EE288710C900B6AA5C /* native_code.cpp in Sources */,
 				46082C2E288712E500B6AA5C /* native_code_wrapper.m in Sources */,
+				4641EEB5288797CB00B219F5 /* log.m in Sources */,
 				460820DE2886964A00B6AA5C /* ContentView.swift in Sources */,
 				460820DC2886964A00B6AA5C /* MedinologyApp.swift in Sources */,
 			);

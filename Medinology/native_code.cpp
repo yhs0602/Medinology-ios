@@ -11,6 +11,9 @@
 #include <iostream>
 #include <fstream>
 #include "eigen/Eigen/Dense"
+extern "C" {
+#include "log.h"
+}
 #include<stdio.h>
 using namespace Eigen;
 using namespace std;
@@ -525,16 +528,27 @@ void calcData()
         x(0,i)=symptoms[i];
     }
     MatrixXd result=net.Predict(x);    //1*numsisease
-    //result=Softmax(result);
+    result=Softmax(result);
+    
     int i,j;
-    prob1=result.maxCoeff(&i,&j)*100;
-    result(i,j)=0;
-    disease1=j;
-    prob2=result.maxCoeff(&i,&j)*100;
+    
+    float p1 =result.maxCoeff(&i,&j);//*100;
+    prob1 = p1 * 100;
+    result(i,j) = 0;
+    disease1 = j;
+    
+    float p2 =result.maxCoeff(&i,&j);//*100;
+    prob2 = p2 * 100;
     result(i,j)=0;
     disease2=j;
-    prob3=result.maxCoeff(&i,&j)*100;
+    
+    float p3 =result.maxCoeff(&i,&j);//*100;
+    prob3 = p3 * 100;
     disease3=j;
+    
+    debug("prob1...%f %i", p1, prob1);
+    debug("prob2...%f %i", p2, prob2);
+    debug("prob3...%f %i", p3, prob3);
 }
 int getDisID(int n)
 {
